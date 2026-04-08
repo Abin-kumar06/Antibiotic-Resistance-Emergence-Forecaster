@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+data/
+models/trained/
+models/*.pkl
+evaluation/metrics/
+.DS_Store
+.env
