@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antibiotic Resistance Forecaster - System Architecture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #6a62d2;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px 20px 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .header p.subtitle {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        .header p.date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+        
+        .main-container {
+            background-color: white;
+            width: 85%;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 40px;
+            min-height: 800px;
+        }
+
+        /* Diagram Styles */
+        .diagram-container {
+            padding: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .layer {
+            border: 1px solid #b3e5fc;
+            background-color: #e1f5fe;
+            padding: 25px 20px;
+            position: relative;
+            margin: 0 auto;
+            width: 85%;
+            text-align: center;
+            border-radius: 2px;
+        }
+        .layer.pipeline {
+            border-color: #ffe082;
+            background-color: #fff8e1;
+        }
+        .layer.models {
+            border-color: #c8e6c9;
+            background-color: #e8f5e9;
+        }
+        .layer.deployment {
+            border-color: #e1bee7;
+            background-color: #f3e5f5;
+        }
+
+        .layer-title {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .nodes-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .node {
+            border: 1px solid #ce93d8;
+            background-color: #fdfcff;
+            padding: 15px 20px;
+            border-radius: 4px;
+            min-width: 180px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .node:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+            transition: all 0.2s;
+        }
+        .node h4 {
+            margin: 0 0 8px 0;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .node p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .arrow-container {
+            display: flex;
+            justify-content: center;
+            height: 45px;
+            width: 100%;
+        }
+
+        /* Components List Styles */
+        .components-section h2 {
+            color: #5142b9;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #f4f4f4;
+            padding-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .component-card {
+            background-color: #fff;
+            border: 1px solid #f1f3f5;
+            border-left: 4px solid #6a62d2;
+            padding: 22px 25px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        
+        .component-card:nth-child(even) {
+            border-left-color: #4facfe;
+        }
+        .component-card:nth-child(4) {
+            border-left-color: #f78ca0;
+        }
+        .component-card:nth-child(5) {
+            border-left-color: #43e97b;
+        }
+
+        .component-card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .component-card ul {
+            margin: 0;
+            padding: 0 0 0 22px;
+            list-style-type: none;
+        }
+
+        .component-card ul li {
+            position: relative;
+            margin-bottom: 12px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        .component-card ul li::before {
+            content: '▶';
+            color: #8c81e6;
+            position: absolute;
+            left: -20px;
+            top: 2px;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>💊 Antibiotic Resistance Forecaster</h1>
+        <p class="subtitle">System Architecture Diagram</p>
+        <p class="date">Generated: 2026-04-09 14:30:00</p>
+    </div>
+
+    <div class="main-container">
+
+        <!-- DIAGRAM SECTION -->
+        <div class="diagram-container">
+            
+            <!-- Layer 1: Data Source -->
+            <div class="layer">
+                <div class="layer-title">📊 Data Source</div>
+                <div class="nodes-wrapper">
+                    <div class="node" style="border-color: #81d4fa;">
+                        <h4>Synthetic Data Generator</h4>
+                        <p>Simulates Patient Demographics<br>& Clinical Outcomes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="arrow-container">
+                <svg width="20" height="40" viewBox="0 0 20 40">
+                    <line x1="10" y1="0" x2="10" y2="35" stroke="#333" stroke-width="1.2"/>
+                    <polygon points="5,30 15,30 10,40" fill="#333"/>
+                </svg>
+            </div>
+
+            <!-- Layer 2: Pipeline -->
+            <div class="layer pipeline">
+                <div class="layer-title">⚙️ Processing Pipeline</div>
+                <div class="nodes-wrapper">
+                    <div class="node" style="border-color: #ffd54f;">
+                        <h4>Data Engineering</h4>
+                        <p>Handling Missing Values<br>& Outlier Imputation</p>
+                    </div>
+                    <div class="node" style="border-color: #ffd54f;">
+                        <h4>Feature Extraction</h4>
+                        <p>Rolling 30-Day Rates &<br>Temporal Variations</p>
+                    </div>
+                    <div class="node" style="border-color: #ffd54f;">
+                        <h4>Encoding Scaling</h4>
+                        <p>LabelEncoder &<br>Standardization</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="arrow-container">
+                <svg width="20" height="40" viewBox="0 0 20 40">
+                    <line x1="10" y1="0" x2="10" y2="35" stroke="#333" stroke-width="1.2"/>
+                    <polygon points="5,30 15,30 10,40" fill="#333"/>
+                </svg>
+            </div>
+
+            <!-- Layer 3: Models -->
+            <div class="layer models">
+                <div class="layer-title">🧠 Machine Learning Engine</div>
+                <div class="nodes-wrapper">
+                    <div class="node" style="border-color: #81c784;">
+                        <h4>Classification Models</h4>
+                        <p>LogReg, Random Forest,<br>XGBoost, MLPClassifier</p>
+                    </div>
+                    <div class="node" style="border-color: #81c784;">
+                        <h4>Explainability Module</h4>
+                        <p>SHAP value analysis<br>for model transparency</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="arrow-container">
+                <svg width="20" height="40" viewBox="0 0 20 40">
+                    <line x1="10" y1="0" x2="10" y2="35" stroke="#333" stroke-width="1.2"/>
+                    <polygon points="5,30 15,30 10,40" fill="#333"/>
+                </svg>
+            </div>
+
+            <!-- Layer 4: Deployment -->
+            <div class="layer deployment">
+                <div class="layer-title">🚀 Deployment & Interfaces</div>
+                <div class="nodes-wrapper">
+                    <div class="node" style="border-color: #ba68c8;">
+                        <h4>FastAPI Backend</h4>
+                        <p>Model serving & Inference API<br>(/predict endpoint)</p>
+                    </div>
+                    <div class="node" style="border-color: #ba68c8;">
+                        <h4>Streamlit Dashboard</h4>
+                        <p>Interactive web UI &<br>Real-time Medical Alerts</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COMPONENTS SECTION -->
+        <div class="components-section">
+            <h2>📋 System Components</h2>
+
+            <div class="component-card">
+                <h3>📊 Data Sources & Generation</h3>
+                <ul>
+                    <li><strong>Patient Profiles:</strong> Simulated Demographics including Age, Gender, and Hospital Region context.</li>
+                    <li><strong>Clinical Inputs:</strong> Core variables spanning specific Medical Infection Types and precisely diagnosed Bacterial Strains (e.g., E. coli, MRSA).</li>
+                    <li><strong>Treatment Logs:</strong> Actionable treatment features like targeted Antibiotic administration, Milligram Dosage, and multi-day Duration periods mapping to clinical outputs.</li>
+                </ul>
+            </div>
+
+            <div class="component-card">
+                <h3>⚙️ Processing Pipeline</h3>
+                <ul>
+                    <li><strong>Imputation Engine:</strong> Fills missing or null clinical data points using Median (Age) and Mode (Dosage) to mimic real-world Electronic Health Record inconsistencies.</li>
+                    <li><strong>Temporal Features:</strong> Generates advanced metric rolling averages (e.g., measuring the historical 30-Day Hospital Antimicrobial Usage Rate, and contextual 30-Day Regional Resistance curves).</li>
+                    <li><strong>Structure & Matrix Scaling:</strong> Converts string categoricals optimally via modular joblib LabelEncoders while standardizing continuous numerical features for algorithmic variance.</li>
+                </ul>
+            </div>
+
+            <div class="component-card">
+                <h3>🧠 ML Engine & Explainability</h3>
+                <ul>
+                    <li><strong>Predictive Classifiers:</strong> Employs diverse baseline and optimized modeling standards (Logistic Regression, Random Forest, lightweight structured end-to-end XGBoost algorithms) to accurately classify binary resistance probabilities.</li>
+                    <li><strong>Deep Neural Networks:</strong> Adapts scalable tabular intelligence using scikit-learn's MLPClassifier implementations to uncover deeply hidden non-linear intersections across vast medical interactions.</li>
+                    <li><strong>SHAP Explainer:</strong> Embeds interpretative capabilities via Shapley Additive exPlanations to interpret machine learning outputs globally, enabling clinicians to visually decode model factors in real-time.</li>
+                </ul>
+            </div>
+
+            <div class="component-card">
+                <h3>🚀 Applications & Deployment Layer</h3>
+                <ul>
+                    <li><strong>API Layer (FastAPI):</strong> A high-concurrent backend router serving predictive mathematical outputs sequentially using XGBoost classification thresholds via robust JSON REST pathways.</li>
+                    <li><strong>Monitoring Dashboard (Streamlit GUI):</strong> Renders visual interface components to practitioners, triggering active medical insights or immediate critical severity warnings driven securely by algorithmic threshold detections online.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
